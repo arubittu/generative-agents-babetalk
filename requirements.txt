@@ -1,0 +1,7 @@
+openai
+python-telegram-bot
+tiktoken
+beautifulsoup4
+langchain
+marvin
+pandas
