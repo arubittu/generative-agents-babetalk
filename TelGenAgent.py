@@ -2,9 +2,8 @@ import logging
 import openai.error
 from telegram import Update
 from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler, MessageHandler, filters
-from GPT import *
-from langchain_bot import *
 from collections import deque
+from GenAgent import *
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -12,6 +11,7 @@ logging.basicConfig(
 )
 
 users = {}
+intro_text = "Heyyy, I'm zaina, whats your name?"
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await context.bot.send_message(chat_id=update.effective_chat.id, text= intro_text)  
@@ -19,13 +19,14 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
     if user_id not in users:
-        users[user_id] = memory_stream(user_id)
+        users[user_id] = MemoryStream(user_id)
+        # add default memories to memstream
+        
         # create mem stream
-        
-        
 
     # Get the response from the GPT model
     try: 
+        
         # send query
     except openai.error.ServiceUnavailableError or openai.error.RateLimitError:
         response_text = "what? say that again?"
