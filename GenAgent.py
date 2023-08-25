@@ -14,7 +14,7 @@ from openai import Embedding
 
 
 #set env variables
-os.environ["OPENAI_API_KEY"] = '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'
+os.environ["OPENAI_API_KEY"] = 'YOUR_KEY'
 def embedding(text: str):
     MODEL = "text-embedding-ada-002"
     return Embedding.create(model=MODEL, input=text).data[0].embedding
