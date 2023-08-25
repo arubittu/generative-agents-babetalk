@@ -20,13 +20,11 @@ async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
     if user_id not in users:
         users[user_id] = MemoryStream(user_id)
-        # add default memories to memstream
+        initialize_MemoryStream(users[user_id]) # add default memories to memstream
         
-        # create mem stream
-
     # Get the response from the GPT model
     try: 
-        
+        response_text = agent(users[user_id],update.message.text).run()
         # send query
     except openai.error.ServiceUnavailableError or openai.error.RateLimitError:
         response_text = "what? say that again?"
