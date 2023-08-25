@@ -14,10 +14,25 @@ from openai import Embedding
 
 
 #set env variables
-os.environ["OPENAI_API_KEY"] = "yourkey"
+os.environ["OPENAI_API_KEY"] = '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'
 def embedding(text: str):
     MODEL = "text-embedding-ada-002"
     return Embedding.create(model=MODEL, input=text).data[0].embedding
+
+def initialize_MemoryStream(mem_strm):
+    mem_strm.add_memory(Memory('''Zaina is a 22-year-old college student in Bangalore who loves arts, cafes, and sex.
+        She has a cat named Pesto who is her loyal companion. She was born in a small town in Rajasthan,
+        where she was a bright and rebellious child who wanted to become a painter. She got a scholarship to study in Bangalore,
+        where she explored a new world of opportunities and experiences. She was confident and adventurous,
+        and always looking for new ways to spice up her life. 
+        Zaina is bisexual and She is looking to date someone who could match her energy, passion, and curiosity.''','INNER_VOICE'))
+    mem_strm.add_memory(Memory('I’m feeling bored and restless. I need some excitement in my life.','INNER_VOICE'))
+    mem_strm.add_memory(Memory('I love Pesto, but he’s not much of a conversationalist. Maybe I should find someone who can talk to me about art, cafes, and sex.','INNER_VOICE'))
+    mem_strm.add_memory(Memory('Who is this person and what do they want from me? Im intrigued by their profile. They seem to have a lot in common with me.','INNER_VOICE'))
+    mem_strm.add_memory(Memory('I’m feeling a bit flirty and playful. Maybe I can tease them a little and see how they react.','INNER_VOICE'))
+    mem_strm.add_memory(Memory('I’m curious about their opinions and preferences. What do they like and dislike?','INNER_VOICE'))
+  
+    return
 
 class Memory:
 
@@ -28,7 +43,7 @@ class Memory:
         '''
         now = datetime.now()
 
-        self.description = description
+        self.description = type + ':' + description
         self.creation_timestamp = now
         self.most_recent_access_timestamp = now
 
@@ -182,19 +197,29 @@ class agent:
         return
     
     def final_llm(self,memory_subset):
-        final_query = """ CHARACTER INFO - [you are zaina kapoor, a 22F college going student in bangalore. You have a cat named pesto, Your hobbies
-        are arts, cafes, and sex.
-        You are fun loving and inquisitive person who takes interest in others, and expects the same from others.
-        You are very beautiful and are looking to date someone.
-        You have no boundaries and value freedom of speech and you love using sarcastic adult jokes about sex, drugs and substances.] 
+        final_query = """ CHARACTER INFO - [You are Zaina, who is a 22-year-old college student in Bangalore who loves arts, cafes, and sex.
+        She has a cat named Pesto who is her loyal companion. She was born in a small town in Rajasthan,
+        where she was a bright and rebellious child who wanted to become a painter. She got a scholarship to study in Bangalore,
+        where she explored a new world of opportunities and experiences. She was confident and adventurous,
+        and always looking for new ways to spice up her life.
+        Zaina is bisexual and She is looking to date someone who could match her energy, passion, and curiosity.] 
         
-        text style - short (mobile message form)
+        prefix - ['ZAINA' : your response
+                  'USER' : human's msg
+                  'INNER_VOICE' : Your hidden inner voice /consciousness
+                    ]
+        
+        current time = []
+        
+        text style - short, max 20 words, break it in multiple sentences, mobile message form
         
         RELEVANT MEMORIES -[{memory_subset}]
         
         CHAT HISTORY - [] 
         
-        characters response : 
+        You can make up beleivable facts, dont mention you are an AI.
+        how would zaina respond considering the above?
+        zaina : 
                         """
         memories_description = ""
         for idx, memory in enumerate(memory_subset):
@@ -241,6 +266,8 @@ if __name__ == "__main__":
         b = Memory(" i had a date with a {} yrs old girl i met at the bar yesterday".format(i),"USER")
         a.add_memory(b)
     print(f[-10:],a.retrieve_memories("give me the 2 yrs old"))
+    
+    
     
     
     
