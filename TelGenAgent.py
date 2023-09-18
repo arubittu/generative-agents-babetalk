@@ -14,17 +14,24 @@ users = {}
 intro_text = "Heyyy, I'm zaina, whats your name?"
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user_id = update.effective_user.id
+    if user_id in users:
+        users.pop(user_id)
     await context.bot.send_message(chat_id=update.effective_chat.id, text= intro_text)  
 
 async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
     if user_id not in users:
-        users[user_id] = MemoryStream(user_id)
-        initialize_MemoryStream(users[user_id]) # add default memories to memstream
+        users[user_id] = [MemoryStream(user_id),deque(maxlen=20)]
+        initialize_MemoryStream(users[user_id][0]) # add default memories to memstream
         
     # Get the response from the GPT model
     try: 
-        response_text = agent(users[user_id],update.message.text).run()
+        print(update.message.text)
+        users[user_id][1].append("USER : "+update.message.text)
+        bot = agent(users[user_id][0],update.message.text,users[user_id][1])
+        response_text = bot.run()
+        users[user_id][1].append("ZAINA : "+response_text)
         # send query
     except openai.error.ServiceUnavailableError or openai.error.RateLimitError:
         response_text = "what? say that again?"
